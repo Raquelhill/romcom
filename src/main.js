@@ -117,19 +117,19 @@ function displaySaved() {
   for (var i = 0; i < savedCovers.length; i++) {
     savedCoversGrid.innerHTML += `
       <section class="mini-cover" id="${savedCovers[i].id}">
-        <img id="${savedCovers[i].id}" class="cover-image" src="${savedCovers[i].cover}">
-        <h2 id="${savedCovers[i].id}" class="cover-title">${savedCovers[i].title}</h2>
-        <h3 id="${savedCovers[i].id}" class="tagline">A tale of <span class="tagline-1">${savedCovers[i].tagline1}</span> and <span class="tagline-2">${savedCovers[i].tagline2}</span></h3>
-        <img id="${savedCovers[i].id}" class="price-tag" src="./assets/price.png">
-        <img id="${savedCovers[i].id}" class="overlay" src="./assets/overlay.png">
+        <img class="cover-image" src="${savedCovers[i].cover}">
+        <h2 class="cover-title">${savedCovers[i].title}</h2>
+        <h3 class="tagline">A tale of <span class="tagline-1">${savedCovers[i].tagline1}</span> and <span class="tagline-2">${savedCovers[i].tagline2}</span></h3>
+        <img class="price-tag" src="./assets/price.png">
+        <img class="overlay" src="./assets/overlay.png">
       </section>`;
   }
 }
 
 function deleteSavedCover(event) {
-  console.log(event.target.id)
+  console.log(event.target.parentNode.id)
   for(var i = 0; i < savedCovers.length; i++) {
-    if (savedCovers[i].id == event.target.id) {
+    if (savedCovers[i].id == event.target.parentNode.id) {
       console.log('I am running!')
       savedCovers.splice(i, 1);
     }
