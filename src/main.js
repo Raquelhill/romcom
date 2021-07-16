@@ -1,5 +1,6 @@
 var savedCovers = [];
 var currentCover;
+
 var coverImage = document.querySelector(".cover-image");
 var coverTitle = document.querySelector(".cover-title");
 var tagLine1 = document.querySelector(".tagline-1");
@@ -9,7 +10,7 @@ var homeBtn = document.querySelector(".home-button");
 var saveCoverBtn = document.querySelector(".save-cover-button");
 var showRandomBtn = document.querySelector(".random-cover-button");
 var viewSavedBtn = document.querySelector(".view-saved-button");
-var makeMyBookBtn = document.querySelector(".create-new-book-button");
+var makeMyCoverBtn = document.querySelector(".create-new-book-button");
 var homePageView = document.querySelector(".home-view");
 var formInputView = document.querySelector(".form-view");
 var savedCoverView = document.querySelector(".saved-view");
@@ -20,14 +21,14 @@ var titleInput = document.querySelector("#title");
 var savedCoversGrid = document.querySelector(".saved-covers-section");
 
 
-window.addEventListener("load", pageLoadCover);
-showRandomBtn.addEventListener("click", pageLoadCover);
-createOwnCoverBtn.addEventListener("click", makeNewForm);
-viewSavedBtn.addEventListener("click", loadSavedPage);
-homeBtn.addEventListener("click", loadHomePage);
-makeMyBookBtn.addEventListener("click", makeMyBook);
+createOwnCoverBtn.addEventListener("click", pgLoadCreateCover);
+homeBtn.addEventListener("click", pgLoadHome);
+makeMyCoverBtn.addEventListener("click", submitCustomCover);
 saveCoverBtn.addEventListener("click", saveCurrentCover);
 savedCoversGrid.addEventListener("dblclick", deleteSavedCover);
+showRandomBtn.addEventListener("click", generateRandomCover);
+viewSavedBtn.addEventListener("click", pgLoadSavedCovers);
+window.addEventListener("load", generateRandomCover);
 
 
 function getRandomIndex(array) {
@@ -40,66 +41,35 @@ function random() {
   var tagline1 = descriptors[getRandomIndex(descriptors)];
   var tagline2 = descriptors[getRandomIndex(descriptors)];
   return [cover, title, tagline1, tagline2];
-};
-
-function displayCover(bookCover1) {
-  coverImage.src = bookCover1.cover;
-  coverTitle.innerText = bookCover1.title;
-  tagLine1.innerText = bookCover1.tagline1;
-  tagLine2.innerText = bookCover1.tagline2;
-};
+}
 
 function createCover(coverImg, title, desc1, desc2){
   return new Cover(coverImg, title, desc1, desc2);
-};
+}
 
-function pageLoadCover() {
+function setHomeCover(cover) {
+    coverImage.src = cover.cover;
+    coverTitle.innerText = cover.title;
+    tagLine1.innerText = cover.tagline1;
+    tagLine2.innerText = cover.tagline2;
+    currentCover = cover;
+}
+
+function generateRandomCover() {
   var randomInfo = random();
   var randomCover = createCover(randomInfo[0], randomInfo[1], randomInfo[2], randomInfo[3]);
-  coverImage.src = randomCover.cover;
-  coverTitle.innerText = randomCover.title;
-  tagLine1.innerText = randomCover.tagline1;
-  tagLine2.innerText = randomCover.tagline2;
-  currentCover = randomCover;
+  setHomeCover(randomCover);
 }
 
-function makeNewForm() {
-  homePageView.classList.add('hidden');
-  formInputView.classList.remove('hidden');
-  showRandomBtn.classList.add('hidden');
-  saveCoverBtn.classList.add('hidden');
-  homeBtn.classList.remove('hidden')
-  savedCoverView.classList.add("hidden")
+function submitCustomCover(e) {
+  e.preventDefault();
+  currentCover = createCover(imageInput.value, titleInput.value, descriptor1Input.value, descriptor2Input.value);
+  setHomeCover(currentCover);
+  saveInputData();
+  pgLoadHome();
 }
 
-function loadSavedPage() {
-  homePageView.classList.add('hidden');
-  savedCoverView.classList.remove('hidden');
-  showRandomBtn.classList.add('hidden');
-  saveCoverBtn.classList.add('hidden');
-  homeBtn.classList.remove('hidden')
-  formInputView.classList.add('hidden')
-  displaySaved();
-}
-
-function loadHomePage() {
-  homePageView.classList.remove('hidden');
-  savedCoverView.classList.add('hidden');
-  showRandomBtn.classList.remove('hidden');
-  saveCoverBtn.classList.remove('hidden');
-  formInputView.classList.add('hidden')
-}
-
-function makeMyBook(e) {
-  e.preventDefault()
-  var userCover = new Cover(imageInput.value, titleInput.value, descriptor1Input.value, descriptor2Input.value);
-  currentCover = userCover
-  displayCover(userCover)
-  pushToSavedCovers()
-  loadHomePage()
-}
-
-function pushToSavedCovers() {
+function saveInputData() {
   covers.push(imageInput.value);
   titles.push(titleInput.value);
   descriptors.push(descriptor1Input.value);
@@ -108,11 +78,39 @@ function pushToSavedCovers() {
 
 function saveCurrentCover(){
   if (!savedCovers.includes(currentCover)) {
-    savedCovers.push(currentCover)
+    savedCovers.push(currentCover);
   }
 }
 
-function displaySaved() {
+function pgLoadCreateCover() {
+  homePageView.classList.add('hidden');
+  showRandomBtn.classList.add('hidden');
+  saveCoverBtn.classList.add('hidden');
+  savedCoverView.classList.add("hidden")
+  formInputView.classList.remove('hidden');
+  homeBtn.classList.remove('hidden');
+}
+
+function pgLoadSavedCovers() {
+  homePageView.classList.add('hidden');
+  showRandomBtn.classList.add('hidden');
+  saveCoverBtn.classList.add('hidden');
+  formInputView.classList.add('hidden')
+  homeBtn.classList.remove('hidden')
+  savedCoverView.classList.remove('hidden');
+  displaySavedCovers();
+}
+
+function pgLoadHome() {
+  homeBtn.classList.add('hidden');
+  homePageView.classList.remove('hidden');
+  savedCoverView.classList.add('hidden');
+  showRandomBtn.classList.remove('hidden');
+  saveCoverBtn.classList.remove('hidden');
+  formInputView.classList.add('hidden')
+}
+
+function displaySavedCovers() {
   savedCoversGrid.innerHTML = "";
   for (var i = 0; i < savedCovers.length; i++) {
     savedCoversGrid.innerHTML += `
@@ -127,12 +125,10 @@ function displaySaved() {
 }
 
 function deleteSavedCover(event) {
-  console.log(event.target.parentNode.id)
   for(var i = 0; i < savedCovers.length; i++) {
     if (savedCovers[i].id == event.target.parentNode.id) {
-      console.log('I am running!')
       savedCovers.splice(i, 1);
     }
   }
-  displaySaved();
+  displaySavedCovers();
 }
