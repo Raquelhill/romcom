@@ -63,31 +63,40 @@ function pageLoadCover() {
   currentCover = randomCover;
 }
 
+function hide(element) {
+  element.classList.add('hidden');
+  }
+
+function show(element) {
+  element.classList.remove('hidden');
+  }
+  
 function makeNewForm() {
-  homePageView.classList.add('hidden');
-  formInputView.classList.remove('hidden');
-  showRandomBtn.classList.add('hidden');
-  saveCoverBtn.classList.add('hidden');
-  homeBtn.classList.remove('hidden')
-  savedCoverView.classList.add("hidden")
+  hide(homePageView);
+  hide(saveCoverBtn);
+  hide(savedCoverView);
+  hide(showRandomBtn);
+  show(formInputView);
+  show(homeBtn);
 }
 
 function loadSavedPage() {
-  homePageView.classList.add('hidden');
-  savedCoverView.classList.remove('hidden');
-  showRandomBtn.classList.add('hidden');
-  saveCoverBtn.classList.add('hidden');
-  homeBtn.classList.remove('hidden')
-  formInputView.classList.add('hidden')
+  hide(formInputView);
+  hide(homePageView);
+  hide(saveCoverBtn);
+  hide(viewSavedBtn);
+  hide(showRandomBtn);
+  show(homeBtn);
+  show(savedCoverView);
   displaySaved();
 }
 
 function loadHomePage() {
-  homePageView.classList.remove('hidden');
-  savedCoverView.classList.add('hidden');
-  showRandomBtn.classList.remove('hidden');
-  saveCoverBtn.classList.remove('hidden');
-  formInputView.classList.add('hidden')
+  hide(formInputView);
+  hide(savedCoverView);
+  show(homePageView);
+  show(saveCoverBtn);
+  show(showRandomBtn);
 }
 
 function makeMyBook(e) {
