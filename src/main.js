@@ -7,10 +7,10 @@ var tagLine1 = document.querySelector(".tagline-1");
 var tagLine2 = document.querySelector(".tagline-2");
 var createOwnCoverBtn = document.querySelector(".make-new-button");
 var homeBtn = document.querySelector(".home-button");
+var makeMyCoverBtn = document.querySelector(".create-new-book-button");
 var saveCoverBtn = document.querySelector(".save-cover-button");
 var showRandomBtn = document.querySelector(".random-cover-button");
 var viewSavedBtn = document.querySelector(".view-saved-button");
-var makeMyCoverBtn = document.querySelector(".create-new-book-button");
 var homePageView = document.querySelector(".home-view");
 var formInputView = document.querySelector(".form-view");
 var savedCoverView = document.querySelector(".saved-view");
@@ -35,14 +35,6 @@ function getRandomIndex(array) {
   return Math.floor(Math.random() * array.length);
 }
 
-function random() {
-  var cover = covers[getRandomIndex(covers)];
-  var title = titles[getRandomIndex(titles)];
-  var tagline1 = descriptors[getRandomIndex(descriptors)];
-  var tagline2 = descriptors[getRandomIndex(descriptors)];
-  return [cover, title, tagline1, tagline2];
-}
-
 function createCover(coverImg, title, desc1, desc2){
   return new Cover(coverImg, title, desc1, desc2);
 }
@@ -56,8 +48,11 @@ function setHomeCover(cover) {
 }
 
 function generateRandomCover() {
-  var randomInfo = random();
-  var randomCover = createCover(randomInfo[0], randomInfo[1], randomInfo[2], randomInfo[3]);
+  var cover = covers[getRandomIndex(covers)];
+  var title = titles[getRandomIndex(titles)];
+  var tagline1 = descriptors[getRandomIndex(descriptors)];
+  var tagline2 = descriptors[getRandomIndex(descriptors)];
+  var randomCover = createCover(cover, title, tagline1, tagline2);
   setHomeCover(randomCover);
 }
 
