@@ -6,10 +6,10 @@ var tagLine1 = document.querySelector(".tagline-1");
 var tagLine2 = document.querySelector(".tagline-2");
 var createOwnCoverBtn = document.querySelector(".make-new-button");
 var homeBtn = document.querySelector(".home-button");
+var makeMyCoverBtn = document.querySelector(".create-new-book-button");
 var saveCoverBtn = document.querySelector(".save-cover-button");
 var showRandomBtn = document.querySelector(".random-cover-button");
 var viewSavedBtn = document.querySelector(".view-saved-button");
-var makeMyBookBtn = document.querySelector(".create-new-book-button");
 var homePageView = document.querySelector(".home-view");
 var formInputView = document.querySelector(".form-view");
 var savedCoverView = document.querySelector(".saved-view");
@@ -18,51 +18,59 @@ var descriptor2Input = document.querySelector("#descriptor2");
 var imageInput = document.querySelector("#cover");
 var titleInput = document.querySelector("#title");
 var savedCoversGrid = document.querySelector(".saved-covers-section");
-
-
-window.addEventListener("load", pageLoadCover);
-showRandomBtn.addEventListener("click", pageLoadCover);
-createOwnCoverBtn.addEventListener("click", makeNewForm);
-viewSavedBtn.addEventListener("click", loadSavedPage);
-homeBtn.addEventListener("click", loadHomePage);
-makeMyBookBtn.addEventListener("click", makeMyBook);
+createOwnCoverBtn.addEventListener("click", pgLoadCreateCover);
+homeBtn.addEventListener("click", pgLoadHome);
+makeMyCoverBtn.addEventListener("click", submitCustomCover);
 saveCoverBtn.addEventListener("click", saveCurrentCover);
 savedCoversGrid.addEventListener("dblclick", deleteSavedCover);
-
+showRandomBtn.addEventListener("click", generateRandomCover);
+viewSavedBtn.addEventListener("click", pgLoadSavedCovers);
+window.addEventListener("load", generateRandomCover);
 
 function getRandomIndex(array) {
   return Math.floor(Math.random() * array.length);
 }
 
-function random() {
+function createCover(coverImg, title, desc1, desc2){
+  return new Cover(coverImg, title, desc1, desc2);
+}
+
+function setHomeCover(cover) {
+    coverImage.src = cover.cover;
+    coverTitle.innerText = cover.title;
+    tagLine1.innerText = cover.tagline1;
+    tagLine2.innerText = cover.tagline2;
+    currentCover = cover;
+}
+
+function generateRandomCover() {
   var cover = covers[getRandomIndex(covers)];
   var title = titles[getRandomIndex(titles)];
   var tagline1 = descriptors[getRandomIndex(descriptors)];
   var tagline2 = descriptors[getRandomIndex(descriptors)];
-  return [cover, title, tagline1, tagline2];
-};
-
-function displayCover(bookCover1) {
-  coverImage.src = bookCover1.cover;
-  coverTitle.innerText = bookCover1.title;
-  tagLine1.innerText = bookCover1.tagline1;
-  tagLine2.innerText = bookCover1.tagline2;
-};
-
-function createCover(coverImg, title, desc1, desc2){
-  return new Cover(coverImg, title, desc1, desc2);
-};
-
-function pageLoadCover() {
-  var randomInfo = random();
-  var randomCover = createCover(randomInfo[0], randomInfo[1], randomInfo[2], randomInfo[3]);
-  coverImage.src = randomCover.cover;
-  coverTitle.innerText = randomCover.title;
-  tagLine1.innerText = randomCover.tagline1;
-  tagLine2.innerText = randomCover.tagline2;
-  currentCover = randomCover;
+  var randomCover = createCover(cover, title, tagline1, tagline2);
+  setHomeCover(randomCover);
 }
 
+function submitCustomCover(e) {
+  e.preventDefault();
+  currentCover = createCover(imageInput.value, titleInput.value, descriptor1Input.value, descriptor2Input.value);
+  setHomeCover(currentCover);
+  saveInputData();
+  pgLoadHome();
+}
+
+function saveInputData() {
+  covers.push(imageInput.value);
+  titles.push(titleInput.value);
+  descriptors.push(descriptor1Input.value);
+  descriptors.push(descriptor2Input.value);
+}
+function saveCurrentCover(){
+  if (!savedCovers.includes(currentCover)) {
+    savedCovers.push(currentCover);
+  }
+}
 function hide(element) {
   element.classList.add('hidden');
   }
@@ -99,29 +107,7 @@ function loadHomePage() {
   show(showRandomBtn);
 }
 
-function makeMyBook(e) {
-  e.preventDefault()
-  var userCover = new Cover(imageInput.value, titleInput.value, descriptor1Input.value, descriptor2Input.value);
-  currentCover = userCover
-  displayCover(userCover)
-  pushToSavedCovers()
-  loadHomePage()
-}
-
-function pushToSavedCovers() {
-  covers.push(imageInput.value);
-  titles.push(titleInput.value);
-  descriptors.push(descriptor1Input.value);
-  descriptors.push(descriptor2Input.value);
-}
-
-function saveCurrentCover(){
-  if (!savedCovers.includes(currentCover)) {
-    savedCovers.push(currentCover)
-  }
-}
-
-function displaySaved() {
+function displaySavedCovers() {
   savedCoversGrid.innerHTML = "";
   for (var i = 0; i < savedCovers.length; i++) {
     savedCoversGrid.innerHTML += `
@@ -136,12 +122,10 @@ function displaySaved() {
 }
 
 function deleteSavedCover(event) {
-  console.log(event.target.parentNode.id)
   for(var i = 0; i < savedCovers.length; i++) {
     if (savedCovers[i].id == event.target.parentNode.id) {
-      console.log('I am running!')
       savedCovers.splice(i, 1);
     }
   }
-  displaySaved();
+  displaySavedCovers();
 }
