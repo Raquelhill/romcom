@@ -1,5 +1,6 @@
 var savedCovers = [];
 var currentCover;
+
 var coverImage = document.querySelector(".cover-image");
 var coverTitle = document.querySelector(".cover-title");
 var tagLine1 = document.querySelector(".tagline-1");
@@ -9,7 +10,7 @@ var homeBtn = document.querySelector(".home-button");
 var makeMyCoverBtn = document.querySelector(".create-new-book-button");
 var saveCoverBtn = document.querySelector(".save-cover-button");
 var showRandomBtn = document.querySelector(".random-cover-button");
-var viewSavedBtn = document.querySelector(".view-saved-button");
+var viewSavedCoversBtn = document.querySelector(".view-saved-button");
 var homePageView = document.querySelector(".home-view");
 var formInputView = document.querySelector(".form-view");
 var savedCoverView = document.querySelector(".saved-view");
@@ -18,13 +19,14 @@ var descriptor2Input = document.querySelector("#descriptor2");
 var imageInput = document.querySelector("#cover");
 var titleInput = document.querySelector("#title");
 var savedCoversGrid = document.querySelector(".saved-covers-section");
-createOwnCoverBtn.addEventListener("click", pgLoadCreateCover);
-homeBtn.addEventListener("click", pgLoadHome);
+
+createOwnCoverBtn.addEventListener("click", loadCreateCoverPage);
+homeBtn.addEventListener("click", loadHomePage);
 makeMyCoverBtn.addEventListener("click", submitCustomCover);
 saveCoverBtn.addEventListener("click", saveCurrentCover);
 savedCoversGrid.addEventListener("dblclick", deleteSavedCover);
 showRandomBtn.addEventListener("click", generateRandomCover);
-viewSavedBtn.addEventListener("click", pgLoadSavedCovers);
+viewSavedCoversBtn.addEventListener("click", loadSavedCoversPage);
 window.addEventListener("load", generateRandomCover);
 
 function getRandomIndex(array) {
@@ -57,7 +59,7 @@ function submitCustomCover(e) {
   currentCover = createCover(imageInput.value, titleInput.value, descriptor1Input.value, descriptor2Input.value);
   setHomeCover(currentCover);
   saveInputData();
-  pgLoadHome();
+  loadHomePage();
 }
 
 function saveInputData() {
@@ -66,11 +68,13 @@ function saveInputData() {
   descriptors.push(descriptor1Input.value);
   descriptors.push(descriptor2Input.value);
 }
+
 function saveCurrentCover(){
   if (!savedCovers.includes(currentCover)) {
     savedCovers.push(currentCover);
   }
 }
+
 function hide(element) {
   element.classList.add('hidden');
   }
@@ -78,33 +82,36 @@ function hide(element) {
 function show(element) {
   element.classList.remove('hidden');
   }
-  
-function makeNewForm() {
+
+function loadCreateCoverPage() {
   hide(homePageView);
   hide(saveCoverBtn);
   hide(savedCoverView);
   hide(showRandomBtn);
   show(formInputView);
   show(homeBtn);
+  show(viewSavedCoversBtn);
 }
 
-function loadSavedPage() {
+function loadSavedCoversPage() {
   hide(formInputView);
   hide(homePageView);
   hide(saveCoverBtn);
-  hide(viewSavedBtn);
+  hide(viewSavedCoversBtn);
   hide(showRandomBtn);
   show(homeBtn);
   show(savedCoverView);
-  displaySaved();
+  displaySavedCovers();
 }
 
 function loadHomePage() {
   hide(formInputView);
   hide(savedCoverView);
+  hide(homeBtn);
   show(homePageView);
   show(saveCoverBtn);
   show(showRandomBtn);
+  show(viewSavedCoversBtn);
 }
 
 function displaySavedCovers() {
