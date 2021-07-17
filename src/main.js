@@ -1,6 +1,5 @@
 var savedCovers = [];
 var currentCover;
-
 var coverImage = document.querySelector(".cover-image");
 var coverTitle = document.querySelector(".cover-title");
 var tagLine1 = document.querySelector(".tagline-1");
@@ -19,8 +18,6 @@ var descriptor2Input = document.querySelector("#descriptor2");
 var imageInput = document.querySelector("#cover");
 var titleInput = document.querySelector("#title");
 var savedCoversGrid = document.querySelector(".saved-covers-section");
-
-
 createOwnCoverBtn.addEventListener("click", pgLoadCreateCover);
 homeBtn.addEventListener("click", pgLoadHome);
 makeMyCoverBtn.addEventListener("click", submitCustomCover);
@@ -29,7 +26,6 @@ savedCoversGrid.addEventListener("dblclick", deleteSavedCover);
 showRandomBtn.addEventListener("click", generateRandomCover);
 viewSavedBtn.addEventListener("click", pgLoadSavedCovers);
 window.addEventListener("load", generateRandomCover);
-
 
 function getRandomIndex(array) {
   return Math.floor(Math.random() * array.length);
@@ -70,39 +66,45 @@ function saveInputData() {
   descriptors.push(descriptor1Input.value);
   descriptors.push(descriptor2Input.value);
 }
-
 function saveCurrentCover(){
   if (!savedCovers.includes(currentCover)) {
     savedCovers.push(currentCover);
   }
 }
+function hide(element) {
+  element.classList.add('hidden');
+  }
 
-function pgLoadCreateCover() {
-  homePageView.classList.add('hidden');
-  showRandomBtn.classList.add('hidden');
-  saveCoverBtn.classList.add('hidden');
-  savedCoverView.classList.add("hidden")
-  formInputView.classList.remove('hidden');
-  homeBtn.classList.remove('hidden');
+function show(element) {
+  element.classList.remove('hidden');
+  }
+  
+function makeNewForm() {
+  hide(homePageView);
+  hide(saveCoverBtn);
+  hide(savedCoverView);
+  hide(showRandomBtn);
+  show(formInputView);
+  show(homeBtn);
 }
 
-function pgLoadSavedCovers() {
-  homePageView.classList.add('hidden');
-  showRandomBtn.classList.add('hidden');
-  saveCoverBtn.classList.add('hidden');
-  formInputView.classList.add('hidden')
-  homeBtn.classList.remove('hidden')
-  savedCoverView.classList.remove('hidden');
-  displaySavedCovers();
+function loadSavedPage() {
+  hide(formInputView);
+  hide(homePageView);
+  hide(saveCoverBtn);
+  hide(viewSavedBtn);
+  hide(showRandomBtn);
+  show(homeBtn);
+  show(savedCoverView);
+  displaySaved();
 }
 
-function pgLoadHome() {
-  homeBtn.classList.add('hidden');
-  homePageView.classList.remove('hidden');
-  savedCoverView.classList.add('hidden');
-  showRandomBtn.classList.remove('hidden');
-  saveCoverBtn.classList.remove('hidden');
-  formInputView.classList.add('hidden')
+function loadHomePage() {
+  hide(formInputView);
+  hide(savedCoverView);
+  show(homePageView);
+  show(saveCoverBtn);
+  show(showRandomBtn);
 }
 
 function displaySavedCovers() {
