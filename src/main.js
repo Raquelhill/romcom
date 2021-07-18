@@ -6,8 +6,9 @@ var coverTitle = document.querySelector(".cover-title");
 var tagLine1 = document.querySelector(".tagline-1");
 var tagLine2 = document.querySelector(".tagline-2");
 var createOwnCoverBtn = document.querySelector(".make-new-button");
+var coverForm = document.querySelector("form");
 var homeBtn = document.querySelector(".home-button");
-var makeMyCoverBtn = document.querySelector(".create-new-book-button");
+var submitCustomCoverBtn = document.querySelector(".create-new-book-button");
 var saveCoverBtn = document.querySelector(".save-cover-button");
 var showRandomBtn = document.querySelector(".random-cover-button");
 var viewSavedCoversBtn = document.querySelector(".view-saved-button");
@@ -20,9 +21,10 @@ var imageInput = document.querySelector("#cover");
 var titleInput = document.querySelector("#title");
 var savedCoversGrid = document.querySelector(".saved-covers-section");
 
+
 createOwnCoverBtn.addEventListener("click", loadCreateCoverPage);
 homeBtn.addEventListener("click", loadHomePage);
-makeMyCoverBtn.addEventListener("click", submitCustomCover);
+coverForm.addEventListener('submit', submitCustomCover);
 saveCoverBtn.addEventListener("click", saveCurrentCover);
 savedCoversGrid.addEventListener("dblclick", deleteSavedCover);
 showRandomBtn.addEventListener("click", generateRandomCover);
@@ -54,12 +56,13 @@ function generateRandomCover() {
   setHomeCover(randomCover);
 }
 
-function submitCustomCover(e) {
-  e.preventDefault();
+function submitCustomCover(event) {
+  event.preventDefault();
   currentCover = createCover(imageInput.value, titleInput.value, descriptor1Input.value, descriptor2Input.value);
   setHomeCover(currentCover);
   saveInputData();
   loadHomePage();
+  coverForm.reset();
 }
 
 function saveInputData() {
@@ -83,6 +86,10 @@ function show(element) {
   element.classList.remove('hidden');
   }
 
+  function makeRequired(element){
+    element.required = true;
+  }
+
 function loadCreateCoverPage() {
   hide(homePageView);
   hide(saveCoverBtn);
@@ -91,13 +98,17 @@ function loadCreateCoverPage() {
   show(formInputView);
   show(homeBtn);
   show(viewSavedCoversBtn);
+  makeRequired(imageInput);
+  makeRequired(titleInput);
+  makeRequired(descriptor1Input);
+  makeRequired(descriptor2Input);
+  imageInput.placeholder = 'Image link'; 
 }
 
 function loadSavedCoversPage() {
   hide(formInputView);
   hide(homePageView);
   hide(saveCoverBtn);
-  hide(viewSavedCoversBtn);
   hide(showRandomBtn);
   show(homeBtn);
   show(savedCoverView);
@@ -121,7 +132,7 @@ function displaySavedCovers() {
       <section class="mini-cover" id="${savedCovers[i].id}">
         <img class="cover-image" src="${savedCovers[i].cover}">
         <h2 class="cover-title">${savedCovers[i].title}</h2>
-        <h3 class="tagline">A tale of <span class="tagline-1">${savedCovers[i].tagline1}</span> and <span class="tagline-2">${savedCovers[i].tagline2}</span></h3>
+        <h3 class="tagline">A tale of ${savedCovers[i].tagline1} and ${savedCovers[i].tagline2}</h3>
         <img class="price-tag" src="./assets/price.png">
         <img class="overlay" src="./assets/overlay.png">
       </section>`;
@@ -130,7 +141,7 @@ function displaySavedCovers() {
 
 function deleteSavedCover(event) {
   for(var i = 0; i < savedCovers.length; i++) {
-    if (savedCovers[i].id == event.target.parentNode.id) {
+    if (savedCovers[i].id.toString() === event.target.parentNode.id) {
       savedCovers.splice(i, 1);
     }
   }
