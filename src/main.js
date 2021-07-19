@@ -6,11 +6,12 @@ var coverTitle = document.querySelector(".cover-title");
 var tagLine1 = document.querySelector(".tagline-1");
 var tagLine2 = document.querySelector(".tagline-2");
 var createOwnCoverBtn = document.querySelector(".make-new-button");
+var coverForm = document.querySelector("form");
 var homeBtn = document.querySelector(".home-button");
+var submitCustomCoverBtn = document.querySelector(".create-new-book-button");
 var saveCoverBtn = document.querySelector(".save-cover-button");
 var showRandomBtn = document.querySelector(".random-cover-button");
-var viewSavedBtn = document.querySelector(".view-saved-button");
-var makeMyCoverBtn = document.querySelector(".create-new-book-button");
+var viewSavedCoversBtn = document.querySelector(".view-saved-button");
 var homePageView = document.querySelector(".home-view");
 var formInputView = document.querySelector(".form-view");
 var savedCoverView = document.querySelector(".saved-view");
@@ -21,26 +22,17 @@ var titleInput = document.querySelector("#title");
 var savedCoversGrid = document.querySelector(".saved-covers-section");
 
 
-createOwnCoverBtn.addEventListener("click", pgLoadCreateCover);
-homeBtn.addEventListener("click", pgLoadHome);
-makeMyCoverBtn.addEventListener("click", submitCustomCover);
+createOwnCoverBtn.addEventListener("click", loadCreateCoverPage);
+homeBtn.addEventListener("click", loadHomePage);
+coverForm.addEventListener('submit', submitCustomCover);
 saveCoverBtn.addEventListener("click", saveCurrentCover);
 savedCoversGrid.addEventListener("dblclick", deleteSavedCover);
 showRandomBtn.addEventListener("click", generateRandomCover);
-viewSavedBtn.addEventListener("click", pgLoadSavedCovers);
+viewSavedCoversBtn.addEventListener("click", loadSavedCoversPage);
 window.addEventListener("load", generateRandomCover);
-
 
 function getRandomIndex(array) {
   return Math.floor(Math.random() * array.length);
-}
-
-function random() {
-  var cover = covers[getRandomIndex(covers)];
-  var title = titles[getRandomIndex(titles)];
-  var tagline1 = descriptors[getRandomIndex(descriptors)];
-  var tagline2 = descriptors[getRandomIndex(descriptors)];
-  return [cover, title, tagline1, tagline2];
 }
 
 function createCover(coverImg, title, desc1, desc2){
@@ -56,17 +48,21 @@ function setHomeCover(cover) {
 }
 
 function generateRandomCover() {
-  var randomInfo = random();
-  var randomCover = createCover(randomInfo[0], randomInfo[1], randomInfo[2], randomInfo[3]);
+  var cover = covers[getRandomIndex(covers)];
+  var title = titles[getRandomIndex(titles)];
+  var tagline1 = descriptors[getRandomIndex(descriptors)];
+  var tagline2 = descriptors[getRandomIndex(descriptors)];
+  var randomCover = createCover(cover, title, tagline1, tagline2);
   setHomeCover(randomCover);
 }
 
-function submitCustomCover(e) {
-  e.preventDefault();
+function submitCustomCover(event) {
+  event.preventDefault();
   currentCover = createCover(imageInput.value, titleInput.value, descriptor1Input.value, descriptor2Input.value);
   setHomeCover(currentCover);
   saveInputData();
-  pgLoadHome();
+  loadHomePage();
+  coverForm.reset();
 }
 
 function saveInputData() {
@@ -82,32 +78,51 @@ function saveCurrentCover(){
   }
 }
 
-function pgLoadCreateCover() {
-  homePageView.classList.add('hidden');
-  showRandomBtn.classList.add('hidden');
-  saveCoverBtn.classList.add('hidden');
-  savedCoverView.classList.add("hidden")
-  formInputView.classList.remove('hidden');
-  homeBtn.classList.remove('hidden');
+function hide(element) {
+  element.classList.add('hidden');
+  }
+
+function show(element) {
+  element.classList.remove('hidden');
+  }
+
+  function makeRequired(element){
+    element.required = true;
+  }
+
+function loadCreateCoverPage() {
+  hide(homePageView);
+  hide(saveCoverBtn);
+  hide(savedCoverView);
+  hide(showRandomBtn);
+  show(formInputView);
+  show(homeBtn);
+  show(viewSavedCoversBtn);
+  makeRequired(imageInput);
+  makeRequired(titleInput);
+  makeRequired(descriptor1Input);
+  makeRequired(descriptor2Input);
+  imageInput.placeholder = 'Image link'; 
 }
 
-function pgLoadSavedCovers() {
-  homePageView.classList.add('hidden');
-  showRandomBtn.classList.add('hidden');
-  saveCoverBtn.classList.add('hidden');
-  formInputView.classList.add('hidden')
-  homeBtn.classList.remove('hidden')
-  savedCoverView.classList.remove('hidden');
+function loadSavedCoversPage() {
+  hide(formInputView);
+  hide(homePageView);
+  hide(saveCoverBtn);
+  hide(showRandomBtn);
+  show(homeBtn);
+  show(savedCoverView);
   displaySavedCovers();
 }
 
-function pgLoadHome() {
-  homeBtn.classList.add('hidden');
-  homePageView.classList.remove('hidden');
-  savedCoverView.classList.add('hidden');
-  showRandomBtn.classList.remove('hidden');
-  saveCoverBtn.classList.remove('hidden');
-  formInputView.classList.add('hidden')
+function loadHomePage() {
+  hide(formInputView);
+  hide(savedCoverView);
+  hide(homeBtn);
+  show(homePageView);
+  show(saveCoverBtn);
+  show(showRandomBtn);
+  show(viewSavedCoversBtn);
 }
 
 function displaySavedCovers() {
@@ -117,7 +132,7 @@ function displaySavedCovers() {
       <section class="mini-cover" id="${savedCovers[i].id}">
         <img class="cover-image" src="${savedCovers[i].cover}">
         <h2 class="cover-title">${savedCovers[i].title}</h2>
-        <h3 class="tagline">A tale of <span class="tagline-1">${savedCovers[i].tagline1}</span> and <span class="tagline-2">${savedCovers[i].tagline2}</span></h3>
+        <h3 class="tagline">A tale of ${savedCovers[i].tagline1} and ${savedCovers[i].tagline2}</h3>
         <img class="price-tag" src="./assets/price.png">
         <img class="overlay" src="./assets/overlay.png">
       </section>`;
@@ -126,7 +141,7 @@ function displaySavedCovers() {
 
 function deleteSavedCover(event) {
   for(var i = 0; i < savedCovers.length; i++) {
-    if (savedCovers[i].id == event.target.parentNode.id) {
+    if (savedCovers[i].id.toString() === event.target.parentNode.id) {
       savedCovers.splice(i, 1);
     }
   }
